@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>학급 경영 마스터 - Full Version</title>
+    <title>학급 경영 마스터 - 관찰 기록 실시간 편집</title>
     <style>
         :root {
             --primary: #6c5ce7; --present: #2ecc71; --absent: #ff7675;
@@ -15,43 +15,45 @@
         
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px; }
         .class-title { font-size: 1.8rem; color: var(--primary); margin: 0; cursor: pointer; }
-        .date-selector { display: flex; align-items: center; gap: 10px; font-weight: bold; background: #eee; padding: 10px 15px; border-radius: 12px; }
         
+        .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: center; }
+        .date-selector { display: flex; align-items: center; gap: 10px; font-weight: bold; background: #eee; padding: 10px 15px; border-radius: 12px; }
+
+        .btn { padding: 12px 18px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; }
+        .btn-stat { background: #0984e3; }
+        .btn-memo { background: #e056fd; }
+        .btn-excel { background: #27ae60; }
+        .btn-save { background: #e67e22; width: 100%; margin-top: 5px; font-size: 1.1rem; }
+
         .dashboard { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 25px; }
-        .stat-card { background: #f8f9fa; padding: 12px; border-radius: 15px; text-align: center; }
+        .stat-card { background: #f8f9fa; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #eee; }
         .stat-value { font-size: 1.5rem; font-weight: 800; display: block; }
         .stat-label { font-size: 0.8rem; color: #888; }
 
-        .btn { padding: 12px 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; }
-        .btn-stat { background: #0984e3; }
-        .btn-memo { background: #e056fd; }
-        .btn-save { background: #e67e22; width: 100%; margin-top: 5px; font-size: 1.1rem; }
-
-        /* 학생 카드 스타일 */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .student-item { position: relative; padding: 15px; border-radius: 20px; transition: 0.2s; min-height: 130px; display: flex; flex-direction: column; cursor: pointer; }
-        .status-present { background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; }
-        .status-absent { background: linear-gradient(135deg, #ff7675, #d63031); color: white; }
-        .status-late { background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: white; }
+        .student-item { position: relative; padding: 15px; border-radius: 20px; transition: 0.3s; min-height: 140px; display: flex; flex-direction: column; cursor: pointer; color: white; }
+        .status-present { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .status-absent { background: linear-gradient(135deg, #ff7675, #d63031); }
+        .status-late { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
         .status-early { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); color: #5d4037; }
 
         .status-badge { font-size: 0.75rem; background: rgba(255,255,255,0.3); padding: 3px 8px; border-radius: 8px; align-self: flex-start; margin-bottom: 8px; }
+        .student-name { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; }
         .memo-area { background: rgba(255,255,255,0.2); border: none; border-radius: 8px; padding: 8px; font-size: 0.85rem; width: 90%; color: inherit; resize: none; }
-
-        /* 모달 공통 */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 2000; }
-        .modal-content { background: #fff; padding: 30px; border-radius: 20px; width: 95%; max-width: 850px; max-height: 85vh; overflow-y: auto; }
         
-        /* 통계 창 내 월 선택 컨트롤 */
-        .month-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; background: #f1f2f6; padding: 10px; border-radius: 12px; justify-content: center; }
-        .stat-table { width: 100%; border-collapse: collapse; }
-        .stat-table th, .stat-table td { border: 1px solid #eee; padding: 10px; text-align: center; }
-
-        /* 관찰 기록 요약 스타일 */
-        .report-section { margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        .report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .memo-row { font-size: 0.9rem; margin-bottom: 4px; display: flex; gap: 8px; }
-        .memo-date { font-weight: bold; color: var(--primary); min-width: 40px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 2000; }
+        .modal-content { background: #fff; padding: 30px; border-radius: 25px; width: 95%; max-width: 800px; max-height: 85vh; overflow-y: auto; }
+        .month-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; background: #f1f2f6; padding: 12px; border-radius: 15px; justify-content: center; }
+        
+        /* 관찰 기록 통계 전용 스타일 */
+        .report-section { margin-bottom: 20px; border: 1px solid #eee; padding: 15px; border-radius: 15px; background: #fdfdfd; }
+        .report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .memo-row { font-size: 0.95rem; margin-bottom: 6px; display: flex; gap: 10px; align-items: flex-start; }
+        .memo-date { font-weight: bold; color: var(--primary); min-width: 45px; margin-top: 2px; }
+        
+        /* 실시간 편집 영역 */
+        .inline-edit-box { background: #f0f2f5; padding: 15px; border-radius: 12px; margin-top: 10px; display: none; border: 1px dashed var(--primary); }
+        .btn-sm { padding: 5px 10px; font-size: 0.8rem; border-radius: 6px; border: none; cursor: pointer; color: white; }
     </style>
 </head>
 <body>
@@ -60,11 +62,16 @@
     <header>
         <h1 class="class-title" id="title" onclick="editTitle()">우리 반 출석부</h1>
         <div style="display: flex; gap: 8px;">
+            <button class="btn btn-excel" onclick="openExcelModal()">📋 명단 복붙</button>
             <button class="btn btn-stat" onclick="openStatModal()">📊 출결 통계</button>
             <button class="btn btn-memo" onclick="openMemoModal()">📝 관찰 기록 통계</button>
-            <div class="date-selector">📅 <input type="date" id="datePicker" onchange="render()"></div>
         </div>
     </header>
+
+    <div class="controls">
+        <div class="date-selector">📅 <input type="date" id="datePicker" onchange="render()"></div>
+        <button class="btn btn-save" onclick="saveAll()">✅ 모든 데이터 저장</button>
+    </div>
 
     <div class="dashboard" id="mainDash">
         <div class="stat-card"> <span class="stat-value" id="c-total">0</span> <span class="stat-label">총원</span> </div>
@@ -74,58 +81,70 @@
         <div class="stat-card"> <span class="stat-value" id="c-early" style="color:var(--early)">0</span> <span class="stat-label">조퇴</span> </div>
     </div>
 
-    <button class="btn btn-save" onclick="saveAll()">✅ 현재 날짜 기록 저장</button>
-    <div id="studentGrid" class="grid" style="margin-top:20px;"></div>
+    <div id="studentGrid" class="grid"></div>
+</div>
+
+<div id="excelModal" class="modal">
+    <div class="modal-content">
+        <h2>📋 명단 대량 등록</h2>
+        <textarea id="excelInput" style="width:100%; height:200px; border-radius:15px; border:1px solid #ddd; padding:15px;" placeholder="엑셀 명단을 복사해서 붙여넣으세요."></textarea>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn btn-excel" style="flex:2" onclick="importNames()">명단 적용하기</button>
+            <button class="btn" style="flex:1; background:#636e72;" onclick="closeModal('excelModal')">취소</button>
+        </div>
+    </div>
 </div>
 
 <div id="statModal" class="modal">
     <div class="modal-content">
         <div class="month-nav">
-            <button onclick="changeStatMonth(-1)" style="border:none; cursor:pointer;">◀</button>
-            <h2 id="statMonthDisplay" style="margin:0; min-width:120px; text-align:center;">2026-04</h2>
-            <button onclick="changeStatMonth(1)" style="border:none; cursor:pointer;">▶</button>
+            <button onclick="changeStatMonth(-1)" style="border:none; background:none; cursor:pointer;">◀</button>
+            <h2 id="statMonthDisplay" style="margin:0; min-width:150px; text-align:center;"></h2>
+            <button onclick="changeStatMonth(1)" style="border:none; background:none; cursor:pointer;">▶</button>
             <button class="btn" style="background:#636e72; margin-left:auto;" onclick="closeModal('statModal')">닫기</button>
         </div>
-        <table class="stat-table">
-            <thead>
-                <tr><th>이름</th><th>출석</th><th>결석</th><th>지각</th><th>조퇴</th></tr>
-            </thead>
-            <tbody id="statTableBody"></tbody>
-        </table>
+        <div id="statTableContainer" style="overflow-x:auto;">
+            <table style="width:100%; border-collapse: collapse; text-align:center;">
+                <thead>
+                    <tr style="background:#f8f9fa;">
+                        <th style="padding:12px; border:1px solid #eee;">이름</th>
+                        <th style="padding:12px; border:1px solid #eee; color:var(--present);">출석</th>
+                        <th style="padding:12px; border:1px solid #eee; color:var(--absent);">결석</th>
+                        <th style="padding:12px; border:1px solid #eee; color:var(--late);">지각</th>
+                        <th style="padding:12px; border:1px solid #eee; color:var(--early);">조퇴</th>
+                    </tr>
+                </thead>
+                <tbody id="statTableBody"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <div id="memoModal" class="modal">
     <div class="modal-content">
-        <div class="report-header">
-            <h2 id="memoMonthTitle">관찰 기록 통계</h2>
-            <button class="btn" style="background:#636e72;" onclick="closeModal('memoModal')">닫기</button>
+        <div class="month-nav">
+            <button onclick="changeMemoMonth(-1)" style="border:none; background:none; cursor:pointer;">◀</button>
+            <h2 id="memoMonthDisplay" style="margin:0; min-width:150px; text-align:center;"></h2>
+            <button onclick="changeMemoMonth(1)" style="border:none; background:none; cursor:pointer;">▶</button>
+            <button class="btn" style="background:#636e72; margin-left:auto;" onclick="closeModal('memoModal')">닫기</button>
         </div>
         <div id="memoReportBody"></div>
     </div>
 </div>
 
-<div id="editPopup" class="modal">
-    <div class="modal-content" style="max-width: 400px;">
-        <h3 id="editTargetName">학생 이름</h3>
-        <div style="margin-bottom: 10px;">날짜: <input type="date" id="editDateSelector"></div>
-        <textarea id="editTextArea" style="width:100%; height:120px; border-radius:10px; padding:10px; margin-bottom:10px;"></textarea>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn btn-save" style="margin:0; flex:1" onclick="saveEditPopup()">저장</button>
-            <button class="btn" style="background:#636e72; flex:1" onclick="closeModal('editPopup')">취소</button>
-        </div>
-    </div>
-</div>
-
 <script>
-    let masterList = JSON.parse(localStorage.getItem('master_students')) || ["김학생", "이학생", "박학생"];
+    let masterList = JSON.parse(localStorage.getItem('master_students')) || [];
     let dailyRecords = JSON.parse(localStorage.getItem('daily_records')) || {};
-    let currentStatMonth = ""; // 통계창에서 현재 보고 있는 월
+    let classTitle = localStorage.getItem('class_title') || '우리 반 출석부';
+    let currentStatMonth = "";
+    let currentMemoMonth = "";
 
     function init() {
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('datePicker').value = today;
+        document.getElementById('title').innerText = classTitle;
         currentStatMonth = today.substring(0, 7);
+        currentMemoMonth = today.substring(0, 7);
         render();
     }
 
@@ -136,79 +155,63 @@
         return autoData;
     }
 
-    // [기능 복구] 출결 4단계 순환
-    function toggleStatus(name) {
-        const date = document.getElementById('datePicker').value;
-        const grid = document.getElementById('studentGrid');
-        const card = grid.querySelector(`[data-name="${name}"]`);
-        
-        const cycle = ['present', 'absent', 'late', 'early'];
-        let currentStatus = card.dataset.status;
-        let nextStatus = cycle[(cycle.indexOf(currentStatus) + 1) % 4];
-        
-        card.dataset.status = nextStatus;
-        card.className = `student-item status-${nextStatus}`;
-        card.querySelector('.status-badge').innerText = getStatusName(nextStatus);
-        updateDashboard();
+    // 명단 등록
+    function openExcelModal() { document.getElementById('excelModal').style.display = 'flex'; }
+    function importNames() {
+        const rawData = document.getElementById('excelInput').value;
+        const newNames = rawData.split('\n').map(name => name.trim()).filter(name => name !== "");
+        if (newNames.length === 0) return alert("입력된 이름이 없습니다.");
+        masterList = newNames;
+        localStorage.setItem('master_students', JSON.stringify(masterList));
+        closeModal('excelModal');
+        render();
     }
 
-    function getStatusName(s) { return {present:'출석', absent:'결석', late:'지각', early:'조퇴'}[s]; }
-
-    // [기능 추가] 통계 창에서 월 변경
-    function changeStatMonth(delta) {
-        let [y, m] = currentStatMonth.split('-').map(Number);
-        m += delta;
-        if (m > 12) { y++; m = 1; }
-        if (m < 1) { y--; m = 12; }
-        currentStatMonth = `${y}-${String(m).padStart(2, '0')}`;
-        updateStatTable();
-    }
-
+    // 출결 통계
     function openStatModal() {
-        currentStatMonth = document.getElementById('datePicker').value.substring(0, 7);
         updateStatTable();
         document.getElementById('statModal').style.display = 'flex';
     }
-
+    function changeStatMonth(delta) {
+        currentStatMonth = adjustMonth(currentStatMonth, delta);
+        updateStatTable();
+    }
     function updateStatTable() {
-        document.getElementById('statMonthDisplay').innerText = currentStatMonth;
+        document.getElementById('statMonthDisplay').innerText = `${currentStatMonth} 출결`;
         const tbody = document.getElementById('statTableBody');
-        const todayStr = new Date().toISOString().split('T')[0];
-
-        tbody.innerHTML = masterList.map(name => {
-            const stats = { present: 0, absent: 0, late: 0, early: 0 };
+        tbody.innerHTML = '';
+        masterList.forEach(name => {
+            let s = { present: 0, absent: 0, late: 0, early: 0 };
             const [y, m] = currentStatMonth.split('-').map(Number);
-            const days = new Date(y, m, 0).getDate();
-
-            for (let d = 1; d <= days; d++) {
+            const lastDay = new Date(y, m, 0).getDate();
+            for (let d = 1; d <= lastDay; d++) {
                 const dateKey = `${currentStatMonth}-${String(d).padStart(2, '0')}`;
-                if (dateKey > todayStr) continue; // 미래 날짜는 통계 제외
-                const dayData = getDayData(dateKey);
-                if (dayData[name]) stats[dayData[name].status]++;
+                const data = getDayData(dateKey);
+                if (data[name]) s[data[name].status]++;
             }
-
-            return `<tr>
-                <td><strong>${name}</strong></td>
-                <td style="color:var(--present)">${stats.present}</td>
-                <td style="color:var(--absent)">${stats.absent}</td>
-                <td style="color:var(--late)">${stats.late}</td>
-                <td style="color:var(--early)">${stats.early}</td>
-            </tr>`;
-        }).join('');
+            tbody.innerHTML += `<tr><td style="padding:10px; border:1px solid #eee;"><strong>${name}</strong></td><td style="border:1px solid #eee;">${s.present}</td><td style="border:1px solid #eee;">${s.absent}</td><td style="border:1px solid #eee;">${s.late}</td><td style="border:1px solid #eee;">${s.early}</td></tr>`;
+        });
     }
 
-    // 관찰 기록 통계 (기록 있는 날만 표시)
+    // 관찰 기록 통계 및 즉시 편집
     function openMemoModal() {
-        const targetMonth = document.getElementById('datePicker').value.substring(0, 7);
-        document.getElementById('memoMonthTitle').innerText = `${targetMonth.split('-')[1]}월 관찰 기록 요약`;
+        updateMemoReport();
+        document.getElementById('memoModal').style.display = 'flex';
+    }
+    function changeMemoMonth(delta) {
+        currentMemoMonth = adjustMonth(currentMemoMonth, delta);
+        updateMemoReport();
+    }
+    function updateMemoReport() {
+        document.getElementById('memoMonthDisplay').innerText = `${currentMemoMonth} 관찰 기록`;
         const body = document.getElementById('memoReportBody');
         body.innerHTML = '';
 
-        masterList.forEach(name => {
+        masterList.forEach((name, idx) => {
             let memos = [];
             Object.keys(dailyRecords).sort().forEach(date => {
-                if(date.startsWith(targetMonth) && dailyRecords[date][name] && dailyRecords[date][name].memo.trim() !== "") {
-                    memos.push({ d: date.split('-')[2], text: dailyRecords[date][name].memo });
+                if (date.startsWith(currentMemoMonth) && dailyRecords[date][name]?.memo.trim()) {
+                    memos.push({ date: date, text: dailyRecords[date][name].memo });
                 }
             });
 
@@ -217,44 +220,69 @@
             section.innerHTML = `
                 <div class="report-header">
                     <span style="font-weight:bold; font-size:1.1rem;">👤 ${name}</span>
-                    <button class="btn" style="padding:4px 8px; font-size:0.7rem; background:#636e72;" onclick="openEditPopup('${name}')">수정/추가</button>
+                    <button class="btn-sm" style="background:var(--primary);" onclick="toggleInlineEdit('${idx}')">+ 수정/추가</button>
                 </div>
-                <div class="memo-list">
-                    ${memos.length > 0 ? memos.map(m => `<div class="memo-row"><span class="memo-date">${m.d}일</span><span>${m.text}</span></div>`).join('') : '<span style="color:#ccc; font-size:0.8rem;">기록 없음</span>'}
-                </div>`;
+                <div class="memo-list" id="memo-list-${idx}">
+                    ${memos.length > 0 ? memos.map(m => `<div class="memo-row"><span class="memo-date">${m.date.split('-')[2]}일</span><span>${m.text}</span></div>`).join('') : '<span style="color:#ccc; font-size:0.9rem;">작성된 기록이 없습니다.</span>'}
+                </div>
+                <div class="inline-edit-box" id="edit-box-${idx}">
+                    <div style="margin-bottom:8px;">
+                        날짜: <input type="date" id="edit-date-${idx}" value="${currentMemoMonth}-01">
+                    </div>
+                    <textarea id="edit-text-${idx}" style="width:100%; height:80px; border-radius:8px; border:1px solid #ddd; padding:8px; margin-bottom:8px;" placeholder="기록을 입력하세요..."></textarea>
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-sm" style="background:#2ecc71; flex:1;" onclick="saveInlineEdit('${name}', '${idx}')">저장</button>
+                        <button class="btn-sm" style="background:#636e72; flex:1;" onclick="toggleInlineEdit('${idx}')">취소</button>
+                    </div>
+                </div>
+            `;
             body.appendChild(section);
         });
-        document.getElementById('memoModal').style.display = 'flex';
     }
 
-    // 개별 수정 팝업 로직
-    let currentEditUser = "";
-    function openEditPopup(name) {
-        currentEditUser = name;
-        document.getElementById('editTargetName').innerText = name;
-        document.getElementById('editDateSelector').value = document.getElementById('datePicker').value;
-        loadEditContent();
-        document.getElementById('editPopup').style.display = 'flex';
+    // 인라인 편집 창 열기/닫기
+    function toggleInlineEdit(idx) {
+        const box = document.getElementById(`edit-box-${idx}`);
+        const isVisible = box.style.display === 'block';
+        document.querySelectorAll('.inline-edit-box').forEach(b => b.style.display = 'none'); // 다른 창 닫기
+        box.style.display = isVisible ? 'none' : 'block';
+        
+        // 창 열 때 현재 선택된 날짜 세팅 (기본값은 메인 화면의 날짜)
+        if(!isVisible) {
+            document.getElementById(`edit-date-${idx}`).value = document.getElementById('datePicker').value;
+        }
     }
 
-    function saveEditPopup() {
-        const date = document.getElementById('editDateSelector').value;
-        const text = document.getElementById('editTextArea').value;
+    // 인라인 편집 저장
+    function saveInlineEdit(name, idx) {
+        const date = document.getElementById(`edit-date-${idx}`).value;
+        const text = document.getElementById(`edit-text-${idx}`).value;
+        
         if(!dailyRecords[date]) dailyRecords[date] = getDayData(date);
-        dailyRecords[date][currentEditUser].memo = text;
+        dailyRecords[date][name].memo = text;
+        
         localStorage.setItem('daily_records', JSON.stringify(dailyRecords));
-        closeModal('editPopup');
-        openMemoModal();
+        updateMemoReport(); // 리스트 새로고침
+        render(); // 메인 화면 동기화
+        alert(`${name} 학생의 기록이 저장되었습니다.`);
     }
 
+    function adjustMonth(monthStr, delta) {
+        let [y, m] = monthStr.split('-').map(Number);
+        m += delta;
+        if (m > 12) { y++; m = 1; } else if (m < 1) { y--; m = 12; }
+        return `${y}-${String(m).padStart(2, '0')}`;
+    }
+
+    // 메인 화면 로직
     function render() {
         const date = document.getElementById('datePicker').value;
         const grid = document.getElementById('studentGrid');
-        const dayData = getDayData(date);
         grid.innerHTML = '';
+        const dayData = dailyRecords[date] || getDayData(date);
 
         masterList.forEach(name => {
-            const info = dayData[name];
+            const info = dayData[name] || { status: 'present', memo: '' };
             const div = document.createElement('div');
             div.className = `student-item status-${info.status}`;
             div.dataset.name = name;
@@ -262,13 +290,25 @@
             div.onclick = (e) => { if(e.target.tagName !== 'TEXTAREA') toggleStatus(name); };
             div.innerHTML = `
                 <div class="status-badge">${getStatusName(info.status)}</div>
-                <div style="font-size:1.3rem; font-weight:800; margin-bottom:10px;">${name}</div>
+                <div class="student-name">${name}</div>
                 <textarea class="memo-area" placeholder="기록...">${info.memo}</textarea>
             `;
             grid.appendChild(div);
         });
         updateDashboard();
     }
+
+    function toggleStatus(name) {
+        const card = document.querySelector(`[data-name="${name}"]`);
+        const cycle = ['present', 'absent', 'late', 'early'];
+        const nextStatus = cycle[(cycle.indexOf(card.dataset.status) + 1) % 4];
+        card.dataset.status = nextStatus;
+        card.className = `student-item status-${nextStatus}`;
+        card.querySelector('.status-badge').innerText = getStatusName(nextStatus);
+        updateDashboard();
+    }
+
+    function getStatusName(s) { return {present:'출석', absent:'결석', late:'지각', early:'조퇴'}[s]; }
 
     function saveAll() {
         const date = document.getElementById('datePicker').value;
@@ -278,13 +318,13 @@
         });
         dailyRecords[date] = data;
         localStorage.setItem('daily_records', JSON.stringify(dailyRecords));
-        alert('저장되었습니다.');
+        localStorage.setItem('master_students', JSON.stringify(masterList));
+        alert('모든 데이터가 성공적으로 저장되었습니다.');
     }
 
     function updateDashboard() {
-        const cards = document.querySelectorAll('.student-item');
         const counts = {present:0, absent:0, late:0, early:0};
-        cards.forEach(c => counts[c.dataset.status]++);
+        document.querySelectorAll('.student-item').forEach(c => counts[c.dataset.status]++);
         document.getElementById('c-total').innerText = masterList.length;
         document.getElementById('c-present').innerText = counts.present;
         document.getElementById('c-absent').innerText = counts.absent;
@@ -293,7 +333,10 @@
     }
 
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    function editTitle() { /* 학급명 수정 로직 */ }
+    function editTitle() {
+        const res = prompt('학급 이름을 수정합니다:', classTitle);
+        if(res) { classTitle = res; localStorage.setItem('class_title', res); document.getElementById('title').innerText = res; }
+    }
 
     init();
 </script>
